@@ -98,6 +98,22 @@ export const fetchCenters = createAsyncThunk<
   return result;
 });
 
+export const notifyCenters = createAsyncThunk<string, void, { state: RootState }>(
+  "centers/notifyCenters", async (_, { getState }) => {
+  const availableCenters = selectAvailableCenters(getState());
+  var msg = '';
+    if(availableCenters.length) {
+        msg = availableCenters.reduce((acc, cur) => {
+          /*Narrowing between the two API responses*/
+          if("sessions" in cur) {
+            return `${acc}\n${cur.name}, ${cur.address} - Total Slots (${cur.sessions.reduce((sl, csl) => sl + csl.available_capacity, 0)})`
+          }
+          return `${acc}\n${cur.name}, ${cur.address} - Total Slots (${cur.available_capacity})})`
+        }, 'Slots Available');
+    }
+    return msg;
+});
+
 const centerSlice = createSlice({
   name: "centers",
   initialState: initialState,
@@ -136,7 +152,7 @@ export const {
 
 export const selectAvailableCenters = createSelector(selectCenters, (centers) =>
   centers.filter((center) => {
-    //Narrowing between the two API responses
+    /*Narrowing between the two API responses*/
     if ("sessions" in center) {
       return center.sessions.filter((session) => session.available_capacity)
         .length;
