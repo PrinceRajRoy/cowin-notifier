@@ -3,6 +3,7 @@ import './App.css';
 import UserForm from './components/UserForm';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
+import Modal from './components/Modal';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Header title="Cowin Notifier" subtitle="Enter Details Below"/>
       <UserForm />
       <Dashboard />
+      <Modal />
     </div>
   );
 }
