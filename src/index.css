@@ -7,6 +7,10 @@
   animation: animation-fade-in 0.5s;
 }
 
+.overlay-in {
+  animation: overlay 0.3s forwards;
+}
+
 @keyframes animation-fade-in {
   from {
     opacity: 0;
@@ -17,5 +21,14 @@
     opacity: 1;
     transform: translateY(0%);
     height: 100%;
+  }
+}
+
+@keyframes overlay {
+  from {
+    background: transparent;
+  }
+  to {
+    background: rgba(0, 0, 0, 0.3);
   }
 }
