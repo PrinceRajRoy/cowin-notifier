@@ -35,22 +35,28 @@ export interface Center {
 
 export interface AvailableCenter extends Omit<Center, "sessions">, Session {}
 
-const centerAdapter = createEntityAdapter<Center | AvailableCenter>({
+const centerAdapter = createEntityAdapter<Center>({
   selectId: (center) => center.center_id,
 });
 
-const extraState = {
-  dates: [""],
-  week: [""],
-  pins: [""],
+interface ExtraState {
+  dates: string[],
+  week: string[],
+  pins: string[],
+  mode: boolean
+}
+
+const extraState: ExtraState = {
+  dates: [],
+  week: [],
+  pins: [],
   //true for dates search, false for week
   mode: true,
-}
+};
 
 const initialState = centerAdapter.getInitialState(extraState);
 
 type InitialState = typeof initialState;
-type ExtraState = typeof extraState;
 
 interface FetchAttributes {
   pins: string[];
@@ -98,20 +104,24 @@ export const fetchCenters = createAsyncThunk<
   return result;
 });
 
-export const notifyCenters = createAsyncThunk<string, void, { state: RootState }>(
-  "centers/notifyCenters", async (_, { getState }) => {
+export const notifyCenters = createAsyncThunk<
+  string,
+  void,
+  { state: RootState }
+>("centers/notifyCenters", async (_, { getState }) => {
   const availableCenters = selectAvailableCenters(getState());
-  var msg = '';
-    if(availableCenters.length) {
-        msg = availableCenters.reduce((acc, cur) => {
-          /*Narrowing between the two API responses*/
-          if("sessions" in cur) {
-            return `${acc}\n${cur.name}, ${cur.address} - Total Slots (${cur.sessions.reduce((sl, csl) => sl + csl.available_capacity, 0)})`
-          }
-          return `${acc}\n${cur.name}, ${cur.address} - Total Slots (${cur.available_capacity})})`
-        }, 'Slots Available');
-    }
-    return msg;
+  var msg = "";
+  if (availableCenters.length) {
+    msg = availableCenters.reduce((acc, cur) => {
+        return `${acc}\n${cur.name}, ${
+          cur.address
+        } - Total Slots (${cur.sessions.reduce(
+          (sl, csl) => sl + csl.available_capacity,
+          0
+        )})`;
+    }, "Slots Available");
+  }
+  return msg;
 });
 
 const centerSlice = createSlice({
@@ -137,8 +147,31 @@ const centerSlice = createSlice({
     builder.addCase(
       fetchCenters.fulfilled,
       (state, action: PayloadAction<Center[] | AvailableCenter[]>) => {
+        let payload = action.payload;
         centerAdapter.removeAll(state);
-        centerAdapter.upsertMany(state, action.payload);
+        if(payload.length) {
+          /*Narrowing between the two API responses*/
+          /* Search By Week */
+          if((payload[0] as Center).sessions) {
+            centerAdapter.upsertMany(state, payload as Center[]);
+          }
+          else {
+            /* Search By Dates */
+              (payload as AvailableCenter[]).forEach((data) => {
+                let values = (({ available_capacity, date, min_age_limit, session_id, slots, vaccine, ...rest }) => ({
+                  available_capacity, date, min_age_limit, session_id, slots, vaccine, rest }))(data);
+                
+                let { rest, ...value } = values;
+
+                let entity = selectCenterById(state, data.center_id);
+                if(entity) {
+                  entity.sessions.push({ ...value});
+                } else {
+                  centerAdapter.addOne(state, { ...rest, sessions: [value] })
+                }
+              });
+          }
+        }
       }
     );
   },
@@ -148,26 +181,27 @@ export const { setInputs } = centerSlice.actions;
 
 export const {
   selectAll: selectCenters,
+  selectById: selectCenterById,
 } = centerAdapter.getSelectors<RootState>((state) => state);
 
 export const selectAvailableCenters = createSelector(selectCenters, (centers) =>
   centers.filter((center) => {
-    /*Narrowing between the two API responses*/
-    if ("sessions" in center) {
       return center.sessions.filter((session) => session.available_capacity)
         .length;
-    }
-    return center.available_capacity;
   })
 );
 
-type SelectRest<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
-
-export const selectRest = createSelector<InitialState, string[], boolean, string[], SelectRest<ExtraState, 'pins'>>(
-  state => state.dates,
-  state => state.mode,
-  state => state.week,
+export const selectRest = createSelector<
+  InitialState,
+  string[],
+  boolean,
+  string[],
+  Omit<ExtraState, "pins">
+>(
+  (state) => state.dates,
+  (state) => state.mode,
+  (state) => state.week,
   (dates, mode, week) => ({ dates, mode, week })
-)
+);
 
 export default centerSlice.reducer;
