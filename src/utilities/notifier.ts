@@ -39,7 +39,6 @@ export default function setNotifier(
               }
             );
           }
-          console.log(msg);
           dispatch(toggleModal(msg));
           audio.play();
         }
