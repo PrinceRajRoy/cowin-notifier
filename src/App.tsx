@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard';
 
 function App() {
   return (
-    <div className="bg-blue-50 min-h-screen w-screen text-center">
+    <div className="bg-blue-50 min-h-screen w-screen text-center font-montserrat">
       <Header title="Cowin Notifier" subtitle="Enter Details Below"/>
       <UserForm />
       <Dashboard />
