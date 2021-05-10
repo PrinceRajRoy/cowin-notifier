@@ -2,7 +2,7 @@
   "name": "cowin-notifier",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://princerajroy.github.io/cowin-notifier",
+  "homepage": "https://princerajroy.github.io/cowin-notifier/",
   "dependencies": {
     "@craco/craco": "^6.1.2",
     "@headlessui/react": "^1.1.1",
