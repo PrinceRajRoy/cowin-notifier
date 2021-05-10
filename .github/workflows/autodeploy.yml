@@ -1,8 +1,11 @@
 name: Auto Deploy
 on:
-  push:
-    branches: [master, main] # run on pushes to master
+  workflow_run:
+    workflows: ["Lint Action"]
+    types:
+      - completed
 jobs:
+  if: ${{ github.event.workflow_run.conclusion == 'success'}}
   build:
     name: Running on Node ${{ matrix.node }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
