@@ -6,26 +6,29 @@ import { toggleModal } from "../../store/reducers";
 
 const Modal: React.FunctionComponent = () => {
   const dispatch = useDispatch();
-  const { message, toggle } = useSelector((state: RootState) => state.modal);
+  const { messages, toggle } = useSelector((state: RootState) => state.modal);
 
   const handleToggle = () => {
-    dispatch(toggleModal(""));
+    dispatch(toggleModal([]));
   };
 
   return (
     <ModalContainer
       close={handleToggle}
       visible={toggle}
-      title={message.length ? "Alert" : "How To Use"}
+      title={messages.length ? "Alert" : "How To Use"}
     >
-      {message.length ? (
-        message
-      ) : (
-        <>
-          <ul className="text-sm list-disc px-4 flex flex-col gap-6">
+      <ul className="text-sm list-disc px-4 flex flex-col gap-6">
+        {messages.length ? (
+          messages.map((msg) => <li>{msg}</li>)
+        ) : (
+          <>
             <li>
               Enter Pincodes in the format Pin1,Pin2,Pin3,... similarly dates
               Date1,Date2,Date3,...
+            </li>
+            <li>
+              If dates not provided, slots for the next 7 days will be shown
             </li>
             <li>
               Select the time duration from dropdown, based on which the slots
@@ -46,9 +49,9 @@ const Modal: React.FunctionComponent = () => {
               </a>{" "}
               and get a key.
             </li>
-          </ul>
-        </>
-      )}
+          </>
+        )}
+      </ul>
     </ModalContainer>
   );
 };
