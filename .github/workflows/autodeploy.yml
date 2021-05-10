@@ -3,9 +3,8 @@ on:
   workflow_run:
     workflows: ["Lint Action"]
     types:
-      - completed
+      - [completed]
 jobs:
-  if: ${{ github.event.workflow_run.conclusion == 'success'}}
   build:
     name: Running on Node ${{ matrix.node }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -14,6 +13,9 @@ jobs:
       matrix:
         node: [ '12.x', '14.x' ]
         os: [ubuntu-latest]
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
       - uses: actions/checkout@v2 # setup the repository in the runner
       - name: Setup Node.js # setup Node.js in the runner
