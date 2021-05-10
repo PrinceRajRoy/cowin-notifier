@@ -14,7 +14,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 }) => {
   const dispatch = useDispatch();
   const handleToggle = () => {
-    dispatch(toggleModal(""));
+    dispatch(toggleModal([]));
   };
 
   return (

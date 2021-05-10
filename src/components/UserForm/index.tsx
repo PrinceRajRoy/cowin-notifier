@@ -2,7 +2,7 @@ import { Formik, Field, Form } from "formik";
 import * as yup from "yup";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { fetchCenters, setInputs } from "../../store/reducers";
+import { setInputs } from "../../store/reducers";
 import setNotifier from "../../utilities/notifier";
 
 interface FormValues {
@@ -70,8 +70,7 @@ const UserForm: React.FunctionComponent = () => {
         dispatch(
           setInputs({ dates: dates, pins: pins, mode: dates[0] !== "" })
         );
-        dispatch(fetchCenters({ dates, pins }));
-        setNotifier(key, timer, "notify");
+        setNotifier(key, timer, dates, pins, "notify");
         actions.setSubmitting(false);
       }}
     >

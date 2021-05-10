@@ -43,7 +43,11 @@ interface ExtraState {
   dates: string[],
   week: string[],
   pins: string[],
-  mode: boolean
+  mode: boolean,
+  modal: {
+    toggle: boolean;
+    messages: string[];
+  }
 }
 
 const extraState: ExtraState = {
@@ -52,6 +56,10 @@ const extraState: ExtraState = {
   pins: [],
   //true for dates search, false for week
   mode: true,
+  modal: {
+    toggle: false,
+    messages: []
+  }
 };
 
 const initialState = centerAdapter.getInitialState(extraState);
@@ -104,26 +112,6 @@ export const fetchCenters = createAsyncThunk<
   return result;
 });
 
-export const notifyCenters = createAsyncThunk<
-  string,
-  void,
-  { state: RootState }
->("centers/notifyCenters", async (_, { getState }) => {
-  const availableCenters = selectAvailableCenters(getState());
-  var msg = "";
-  if (availableCenters.length) {
-    msg = availableCenters.reduce((acc, cur) => {
-        return `${acc}\n${cur.name}, ${
-          cur.address
-        } - Total Slots (${cur.sessions.reduce(
-          (sl, csl) => sl + csl.available_capacity,
-          0
-        )})`;
-    }, "Slots Available");
-  }
-  return msg;
-});
-
 const centerSlice = createSlice({
   name: "centers",
   initialState: initialState,
@@ -141,6 +129,10 @@ const centerSlice = createSlice({
           return tempDate.toLocaleDateString("en-GB").replaceAll("/", "-");
         });
       }
+    },
+    toggleModal: (state, action:PayloadAction<string[]>) => {
+      state.modal.toggle = !state.modal.toggle
+      state.modal.messages = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -177,7 +169,7 @@ const centerSlice = createSlice({
   },
 });
 
-export const { setInputs } = centerSlice.actions;
+export const { setInputs, toggleModal } = centerSlice.actions;
 
 export const {
   selectAll: selectCenters,
@@ -196,7 +188,7 @@ export const selectRest = createSelector<
   string[],
   boolean,
   string[],
-  Omit<ExtraState, "pins">
+  Omit<ExtraState, "pins" | "modal">
 >(
   (state) => state.dates,
   (state) => state.mode,
