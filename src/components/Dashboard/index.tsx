@@ -56,38 +56,34 @@ const Dashboard: React.FunctionComponent = () => {
                     <div>{center.address}</div>
                   </td>
                   {finalDates.map((date) =>
-                        checkExists(center.sessions, date) ? (
-                          center.sessions.map((session) =>
-                            /* Center Session Date and Week Date Matched */
-                            session.available_capacity &&
-                            session.date === date ? (
-                              <td
-                                className="px-6 py-4 whitespace-nowrap"
-                                key={session.session_id}
-                              >
-                                <div>{session.available_capacity} Doses</div>
-                                <div>For {session.min_age_limit}+</div>
-                              </td>
-                            ) : /* Center Session Date and Week Date Matched But No Available Slots Or Date Of The Week Didn't Match */
-                            session.date === date ? (
-                              <td
-                                className="px-6 py-4 whitespace-nowrap"
-                                key={session.session_id}
-                              >
-                                NA
-                              </td>
-                            ) : null
-                          )
-                        ) : (
-                          /* Given Date value doesn't exist on API response */
+                    checkExists(center.sessions, date) ? (
+                      center.sessions.map((session) =>
+                        /* Center Session Date and Week Date Matched */
+                        session.available_capacity && session.date === date ? (
                           <td
                             className="px-6 py-4 whitespace-nowrap"
-                            key={date}
+                            key={session.session_id}
+                          >
+                            <div>{session.available_capacity} Doses</div>
+                            <div>For {session.min_age_limit}+</div>
+                          </td>
+                        ) : /* Center Session Date and Week Date Matched But No Available Slots Or Date Of The Week Didn't Match */
+                        session.date === date ? (
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            key={session.session_id}
                           >
                             NA
                           </td>
-                        )
-                      )}
+                        ) : null
+                      )
+                    ) : (
+                      /* Given Date value doesn't exist on API response */
+                      <td className="px-6 py-4 whitespace-nowrap" key={date}>
+                        NA
+                      </td>
+                    )
+                  )}
                 </tr>
               ))
             ) : dates.length && !show.length ? (

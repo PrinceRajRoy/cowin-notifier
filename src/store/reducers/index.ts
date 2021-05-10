@@ -40,14 +40,14 @@ const centerAdapter = createEntityAdapter<Center>({
 });
 
 interface ExtraState {
-  dates: string[],
-  week: string[],
-  pins: string[],
-  mode: boolean,
+  dates: string[];
+  week: string[];
+  pins: string[];
+  mode: boolean;
   modal: {
     toggle: boolean;
     messages: string[];
-  }
+  };
 }
 
 const extraState: ExtraState = {
@@ -58,8 +58,8 @@ const extraState: ExtraState = {
   mode: true,
   modal: {
     toggle: false,
-    messages: []
-  }
+    messages: [],
+  },
 };
 
 const initialState = centerAdapter.getInitialState(extraState);
@@ -130,8 +130,8 @@ const centerSlice = createSlice({
         });
       }
     },
-    toggleModal: (state, action:PayloadAction<string[]>) => {
-      state.modal.toggle = !state.modal.toggle
+    toggleModal: (state, action: PayloadAction<string[]>) => {
+      state.modal.toggle = !state.modal.toggle;
       state.modal.messages = action.payload;
     },
   },
@@ -141,27 +141,41 @@ const centerSlice = createSlice({
       (state, action: PayloadAction<Center[] | AvailableCenter[]>) => {
         let payload = action.payload;
         centerAdapter.removeAll(state);
-        if(payload.length) {
+        if (payload.length) {
           /*Narrowing between the two API responses*/
           /* Search By Week */
-          if((payload[0] as Center).sessions) {
+          if ((payload[0] as Center).sessions) {
             centerAdapter.upsertMany(state, payload as Center[]);
-          }
-          else {
+          } else {
             /* Search By Dates */
-              (payload as AvailableCenter[]).forEach((data) => {
-                let values = (({ available_capacity, date, min_age_limit, session_id, slots, vaccine, ...rest }) => ({
-                  available_capacity, date, min_age_limit, session_id, slots, vaccine, rest }))(data);
-                
-                let { rest, ...value } = values;
+            (payload as AvailableCenter[]).forEach((data) => {
+              let values = (({
+                available_capacity,
+                date,
+                min_age_limit,
+                session_id,
+                slots,
+                vaccine,
+                ...rest
+              }) => ({
+                available_capacity,
+                date,
+                min_age_limit,
+                session_id,
+                slots,
+                vaccine,
+                rest,
+              }))(data);
 
-                let entity = selectCenterById(state, data.center_id);
-                if(entity) {
-                  entity.sessions.push({ ...value});
-                } else {
-                  centerAdapter.addOne(state, { ...rest, sessions: [value] })
-                }
-              });
+              let { rest, ...value } = values;
+
+              let entity = selectCenterById(state, data.center_id);
+              if (entity) {
+                entity.sessions.push({ ...value });
+              } else {
+                centerAdapter.addOne(state, { ...rest, sessions: [value] });
+              }
+            });
           }
         }
       }
@@ -178,8 +192,8 @@ export const {
 
 export const selectAvailableCenters = createSelector(selectCenters, (centers) =>
   centers.filter((center) => {
-      return center.sessions.filter((session) => session.available_capacity)
-        .length;
+    return center.sessions.filter((session) => session.available_capacity)
+      .length;
   })
 );
 

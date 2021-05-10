@@ -1,8 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
-import centerReducer from './reducers/index';
+import { configureStore } from "@reduxjs/toolkit";
+import centerReducer from "./reducers/index";
 
 export const store = configureStore({
-  reducer: centerReducer
+  reducer: centerReducer,
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -38,10 +38,17 @@ const DetailSchema = yup.object().shape({
     otherwise: yup.string().length(22),
   }),
   timer: yup.number().when(["desktop", "mobile", "gmail"], {
-    is: (desktop: FormValues["desktop"], mobile: FormValues["mobile"], gmail: FormValues["gmail"]) => desktop || mobile || gmail,
-    then: yup.number().required().not([0], "Please Select A Value From Dropdown"),
-    otherwise: yup.number()
-  })
+    is: (
+      desktop: FormValues["desktop"],
+      mobile: FormValues["mobile"],
+      gmail: FormValues["gmail"]
+    ) => desktop || mobile || gmail,
+    then: yup
+      .number()
+      .required()
+      .not([0], "Please Select A Value From Dropdown"),
+    otherwise: yup.number(),
+  }),
 });
 
 const UserForm: React.FunctionComponent = () => {
@@ -52,7 +59,7 @@ const UserForm: React.FunctionComponent = () => {
     mobile: false,
     gmail: false,
     key: "",
-    timer: 0
+    timer: 0,
   };
 
   const dispatch = useDispatch();
@@ -143,7 +150,9 @@ const UserForm: React.FunctionComponent = () => {
                 name="timer"
                 className="fade-in w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
               >
-                <option disabled value={0}>Notify After Every</option>
+                <option disabled value={0}>
+                  Notify After Every
+                </option>
                 <option value={1}>1 min</option>
                 <option value={2}>2 mins</option>
                 <option value={5}>5 mins</option>
@@ -154,7 +163,9 @@ const UserForm: React.FunctionComponent = () => {
                 <option value={60}>1 hour</option>
               </Field>
               {errors.timer && touched.timer ? (
-                <div className="text-red-600 text-sm fade-in">{errors.timer}</div>
+                <div className="text-red-600 text-sm fade-in">
+                  {errors.timer}
+                </div>
               ) : null}
             </div>
           ) : null}

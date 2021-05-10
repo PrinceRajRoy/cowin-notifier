@@ -32,11 +32,14 @@ export default function setNotifier(
         }, "Slots Available");
         if (timer) {
           if (key) {
-              axios.post(`https://maker.ifttt.com/trigger/${hook}/with/key/${key}`, {
-              Value1: msg,
-            });
+            axios.post(
+              `https://maker.ifttt.com/trigger/${hook}/with/key/${key}`,
+              {
+                Value1: msg,
+              }
+            );
           }
-          console.log(msg)
+          console.log(msg);
           dispatch(toggleModal(msg));
           audio.play();
         }
