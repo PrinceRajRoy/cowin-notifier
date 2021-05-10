@@ -73,11 +73,14 @@ const UserForm: React.FunctionComponent = () => {
         let dates = values.dates.split(",");
         let timer = values.timer;
         let key = values.key;
+        let desktop = values.desktop;
+        let mobile = values.mobile;
+        let gmail = values.gmail;
 
         dispatch(
           setInputs({ dates: dates, pins: pins, mode: dates[0] !== "" })
         );
-        setNotifier(key, timer, dates, pins, "notify");
+        setNotifier(key, timer, dates, pins, desktop, mobile, gmail);
         actions.setSubmitting(false);
       }}
     >

@@ -12,6 +12,9 @@ export default function setNotifier(
   timer: number,
   dates: string[],
   pins: string[],
+  desktop: boolean,
+  mobile: boolean,
+  gmail: boolean,
   hook = "notify"
 ) {
   var audio = new Audio(myAudio);
@@ -33,14 +36,17 @@ export default function setNotifier(
         if (timer) {
           if (key) {
             axios.post(
-              `https://maker.ifttt.com/trigger/${hook}/with/key/${key}`,
+              `http://localhost:8888/.netlify/functions/notify?hook=${hook}&key=${key}&msg=${msg}`,
               {
                 Value1: msg,
               }
             );
           }
           dispatch(toggleModal(msg));
-          audio.play();
+          if (desktop) {
+            dispatch(toggleModal(msg));
+            audio.play();
+          }
         }
         clearInterval(checkAtInterval);
       }

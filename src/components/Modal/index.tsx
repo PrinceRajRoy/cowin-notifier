@@ -20,7 +20,7 @@ const Modal: React.FunctionComponent = () => {
     >
       <ul className="text-sm list-disc px-4 flex flex-col gap-6">
         {messages.length ? (
-          messages.map((msg) => <li>{msg}</li>)
+          messages.map((msg) => <li key={msg}>{msg}</li>)
         ) : (
           <>
             <li>
