@@ -27,6 +27,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "lint": "tsc --noEmit && eslint \"./src/**/*.{js,ts,tsx}\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
