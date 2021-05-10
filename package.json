@@ -5,7 +5,6 @@
   "homepage": "https://princerajroy.github.io/cowin-notifier/",
   "dependencies": {
     "@craco/craco": "^6.1.2",
-    "@headlessui/react": "^1.1.1",
     "@reduxjs/toolkit": "^1.5.1",
     "@tailwindcss/forms": "^0.3.2",
     "@testing-library/jest-dom": "^5.12.0",
@@ -29,8 +28,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -51,9 +49,8 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^9.8.6",
-    "gh-pages": "^3.1.0",
-    "postcss": "^7.0.35",
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.14",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.2"
   }
 }
