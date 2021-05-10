@@ -1,27 +1,58 @@
 import { Formik, Field, Form } from "formik";
-import * as Yup from "yup";
+import * as yup from "yup";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { fetchCenters, setInputs } from "../../store/reducers";
+import setNotifier from "../../utilities/notifier";
 
 interface FormValues {
   pins: string;
   dates: string;
-  districts: string[];
+  desktop: boolean;
+  mobile: boolean;
+  gmail: boolean;
+  key: string;
+  timer: number;
 }
 
-const DetailSchema = Yup.object().shape({
-  // pins: Yup.string().transform((value) => value.split(/[\s,]+/)).required('Required'),
-  // dates: Yup.ref('pins')
-  pins: Yup.string(),
-  dates: Yup.string(),
+const DetailSchema = yup.object().shape({
+  pins: yup
+    .string()
+    .matches(
+      /^\d{6}(,\d{6})*$/,
+      "enter comma separated values in correct format"
+    )
+    .required(),
+  dates: yup
+    .string()
+    .matches(
+      /^([0]?[1-9]|[1|2][0-9]|[3][0|1])[-]([0]?[1-9]|[1][0-2])[-]([0-9]{4})(,([0]?[1-9]|[1|2][0-9]|[3][0|1])[-]([0]?[1-9]|[1][0-2])[-]([0-9]{4}))*$/,
+      "enter comma separated values in correct format"
+    ),
+  desktop: yup.boolean(),
+  mobile: yup.boolean(),
+  gmail: yup.boolean(),
+  key: yup.string().when("mobile", {
+    is: true,
+    then: yup.string().length(22).required(),
+    otherwise: yup.string().length(22),
+  }),
+  timer: yup.number().when(["desktop", "mobile", "gmail"], {
+    is: (desktop: FormValues["desktop"], mobile: FormValues["mobile"], gmail: FormValues["gmail"]) => desktop || mobile || gmail,
+    then: yup.number().required().not([0], "Please Select A Value From Dropdown"),
+    otherwise: yup.number()
+  })
 });
 
 const UserForm: React.FunctionComponent = () => {
   const initialValues: FormValues = {
     pins: "",
     dates: "",
-    districts: [],
+    desktop: false,
+    mobile: false,
+    gmail: false,
+    key: "",
+    timer: 0
   };
 
   const dispatch = useDispatch();
@@ -33,31 +64,109 @@ const UserForm: React.FunctionComponent = () => {
       onSubmit={(values, actions) => {
         let pins = values.pins.split(",");
         let dates = values.dates.split(",");
-    
-        dispatch(setInputs({ dates: dates, pins: pins, mode: dates[0] !== '' }));
-        dispatch(fetchCenters({dates, pins}));
+        let timer = values.timer;
+        let key = values.key;
+
+        dispatch(
+          setInputs({ dates: dates, pins: pins, mode: dates[0] !== "" })
+        );
+        dispatch(fetchCenters({ dates, pins }));
+        setNotifier(key, timer, "notify");
+        actions.setSubmitting(false);
       }}
     >
-      <Form className="w-screen mt-5 flex h-10 justify-center align-center mx-auto flex-row">
-        <Field
-          id="pins"
-          name="pins"
-          placeholder="Enter Pins"
-          className="mr-6 w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
-        />
-        <Field
-          id="dates"
-          name="dates"
-          placeholder="Enter Dates, defaults to next 7 days"
-          className="mr-6 w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
-        />
-        <button
-          type="submit"
-          className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md focus:outline-none self-center"
-        >
-          Submit
-        </button>
-      </Form>
+      {({ errors, touched, values }) => (
+        <Form className="w-screen mt-5 flex items-center flex-col">
+          <div className="flex flex-row">
+            <div className="flex flex-col items-start">
+              <Field
+                id="pins"
+                name="pins"
+                placeholder="Enter Pins"
+                className="mr-6 w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+              {errors.pins && touched.pins ? (
+                <div className="text-red-600 text-sm fade-in">
+                  {errors.pins}
+                </div>
+              ) : null}
+            </div>
+            <div className="flex flex-col items-start">
+              <Field
+                id="dates"
+                name="dates"
+                placeholder="Enter Dates, defaults to next 7 days"
+                className="w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+              {errors.dates && touched.dates ? (
+                <div className="text-red-600 text-sm fade-in">
+                  {errors.dates}
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex flex-row my-2">
+            Get Notification as
+            <label className="inline-flex items-center ml-4">
+              <Field type="checkbox" name="desktop" className="mt-0.5 mr-0.5" />
+              Desktop Alert
+            </label>
+            <label className="inline-flex items-center ml-4">
+              <Field type="checkbox" name="mobile" className="mt-0.5 mr-0.5" />
+              Mobile Notification
+            </label>
+            <label className="inline-flex items-center ml-4">
+              <Field
+                type="checkbox"
+                name="gmail"
+                className="mt-0.5 mr-0.5"
+                disabled
+              />
+              Gmail (WIP)
+            </label>
+          </div>
+          {values.mobile ? (
+            <div className="flex flex-col items-start mb-6">
+              <Field
+                name="key"
+                placeholder="Enter IFTTT Key"
+                className="fade-in w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+              {errors.key && touched.key ? (
+                <div className="text-red-600 text-sm fade-in">{errors.key}</div>
+              ) : null}
+            </div>
+          ) : null}
+          {values.mobile || values.desktop || values.gmail ? (
+            <div className="flex flex-col items-start mb-6">
+              <Field
+                as="select"
+                name="timer"
+                className="fade-in w-80 rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              >
+                <option disabled value={0}>Notify After Every</option>
+                <option value={1}>1 min</option>
+                <option value={2}>2 mins</option>
+                <option value={5}>5 mins</option>
+                <option value={10}>10 mins</option>
+                <option value={15}>15 mins</option>
+                <option value={25}>25 mins</option>
+                <option value={30}>30 mins</option>
+                <option value={60}>1 hour</option>
+              </Field>
+              {errors.timer && touched.timer ? (
+                <div className="text-red-600 text-sm fade-in">{errors.timer}</div>
+              ) : null}
+            </div>
+          ) : null}
+          <button
+            type="submit"
+            className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md focus:outline-none self-center"
+          >
+            Submit
+          </button>
+        </Form>
+      )}
     </Formik>
   );
 };
