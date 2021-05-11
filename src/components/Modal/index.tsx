@@ -28,7 +28,7 @@ const Modal: React.FunctionComponent = () => {
               Date1,Date2,Date3,...
             </li>
             <li>
-              If dates not provided, slots for the next 7 days will be shown
+              If dates are not provided, results for the next 7 days will be shown
             </li>
             <li>
               Select the time duration from dropdown, based on which the slots
@@ -36,7 +36,7 @@ const Modal: React.FunctionComponent = () => {
             </li>
             <li>
               To receive mobile notification, one needs to have IFTTT app
-              installed on mobile follow steps from this{" "}
+              installed on mobile, follow the steps from this{" "}
               <a
                 href={
                   "https://betterprogramming.pub/how-to-send-push-notifications-to-your-phone-from-any-script-6b70e34748f6"
@@ -47,7 +47,13 @@ const Modal: React.FunctionComponent = () => {
               >
                 blog
               </a>{" "}
-              and get a key.
+              and get a key
+            </li>
+            <li>
+              The Govt. has limited the API request limit at 100 calls/5 min per IP, make sure (Total Pin Codes * Total Dates)/(Timer Minutes) {"<="} 20
+            </li>
+            <li>
+              <span className="text-red-600 font-bold">Keep this tab open</span>, a script will be running in the background, polling the Cowin APIs at provided time intervals
             </li>
           </>
         )}
