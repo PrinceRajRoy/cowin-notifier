@@ -7,6 +7,10 @@ module.exports = {
         montserrat: ['Montserrat']
       }
     },
+    maxHeight: {
+      '4/5': '80%',
+      'screen-7/10': "70vh"
+    },
   },
   variants: {
     extend: {},

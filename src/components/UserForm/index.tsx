@@ -52,6 +52,7 @@ const DetailSchema = yup.object().shape({
     name: 'Check Total API calls',
     message: `Given inputs will limit the API, read How To Use`,
     test: function(value) {
+      value = value === 0 ? 1 : value;
       let pinsLength = this.parent.pins?.split(",").length ?? 0;
       let datesLength = this.parent.dates?.split(",").length ?? 0;
       return (pinsLength * datesLength)/(value as number) <= 20;

@@ -52,5 +52,5 @@ export default function setNotifier(
     });
   }
   check();
-  const checkAtInterval = setTimeout(check, timer * 60000);
+  const checkAtInterval = setInterval(check, timer * 60000);
 }
