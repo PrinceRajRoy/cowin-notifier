@@ -32,7 +32,7 @@ const Modal: React.FunctionComponent = () => {
             </li>
             <li>
               Select the time duration from dropdown, based on which the slots
-              will be checked at regural intervals
+              will be checked at regural intervals. It will only notify when the slots are available
             </li>
             <li>
               To receive mobile notification, one needs to have IFTTT app

@@ -164,6 +164,7 @@ const UserForm: React.FunctionComponent = () => {
                 <option disabled value={0}>
                   Notify After Every
                 </option>
+                <option value={0.5}>30 secs</option>
                 <option value={1}>1 min</option>
                 <option value={2}>2 mins</option>
                 <option value={5}>5 mins</option>
