@@ -6,12 +6,17 @@
 @layer utilities {
   ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
     background: #a2a0a8;
   }
   
   ::-webkit-scrollbar-thumb {
     background: #474647;
     border-radius: 10px;
+  }
+
+  #root {
+    overflow: hidden;
   }
   
   .fade-in {

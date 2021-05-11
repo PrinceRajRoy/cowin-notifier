@@ -80,7 +80,7 @@ const UserForm: React.FunctionComponent = () => {
       onSubmit={(values, actions) => {
         let pins = values.pins.split(",");
         let dates = values.dates.split(",");
-        let timer = values.timer;
+        let timer = values.timer === 0 ? 1 : values.timer;
         let key = values.key;
         let desktop = values.desktop;
         let mobile = values.mobile;

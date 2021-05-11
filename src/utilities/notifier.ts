@@ -52,5 +52,10 @@ export default function setNotifier(
     });
   }
   check();
+  let previousTimerId = JSON.parse(localStorage.getItem("currentTimerId")!);
+  if(previousTimerId) {
+    clearInterval(previousTimerId);
+  }
   const checkAtInterval = setInterval(check, timer * 60000);
+  localStorage.setItem("currentTimerId", JSON.stringify(checkAtInterval));
 }

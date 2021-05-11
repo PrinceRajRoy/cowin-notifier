@@ -66,6 +66,9 @@ const Modal: React.FunctionComponent = () => {
               The polling will stop once some slots are found and the user is
               notified
             </li>
+            <li>
+              If none of the notifiers are selected, the result list provided on this website will be updated every minute
+            </li>
             <li>Notification Sample</li>
             <img src={sample} alt="Sample" className="max-w-xs mx-auto mb-6"></img>
           </>
