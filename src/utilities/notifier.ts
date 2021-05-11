@@ -46,8 +46,8 @@ export default function setNotifier(
             dispatch(toggleModal(msg));
             audio.play();
           }
+          clearInterval(checkAtInterval);
         }
-        clearInterval(checkAtInterval);
       }
     });
   }
