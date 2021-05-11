@@ -21,15 +21,19 @@ const Dashboard: React.FunctionComponent = () => {
   return (
     <div className="w-full mx-auto py-10 divide-y divide-blue-200">
       <div className="w-5/6 mx-auto">
-        <div className="flex items-center mb-1">
-          <input
-            id="showCheck"
-            type="checkbox"
-            className="mr-2"
-            onChange={() => setShowAvailable((showAvailable) => !showAvailable)}
-          />
-          <label htmlFor="showCheck">Show Only Available Centers</label>
-        </div>
+        {show.length && (
+          <div className="flex items-center mb-1">
+            <input
+              id="showCheck"
+              type="checkbox"
+              className="mr-2"
+              onChange={() =>
+                setShowAvailable((showAvailable) => !showAvailable)
+              }
+            />
+            <label htmlFor="showCheck">Show Only Available Centers</label>
+          </div>
+        )}
         <table className="w-full shadow break-all border-b border-gray-200 sm:rounded-lg divide-y divide-gray-200 text-left text-sm overflow-scroll">
           <thead className="bg-blue-500 text-white">
             <tr>
