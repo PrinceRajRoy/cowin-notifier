@@ -48,6 +48,14 @@ const DetailSchema = yup.object().shape({
       .required()
       .not([0], "Please Select A Value From Dropdown"),
     otherwise: yup.number(),
+  }).test({
+    name: 'Check Total API calls',
+    message: `Given inputs will limit the API, read How To Use`,
+    test: function(value) {
+      let pinsLength = this.parent.pins?.split(",").length ?? 0;
+      let datesLength = this.parent.dates?.split(",").length ?? 0;
+      return (pinsLength * datesLength)/(value as number) <= 20;
+    }
   }),
 });
 
@@ -166,7 +174,7 @@ const UserForm: React.FunctionComponent = () => {
                 <option value={60}>1 hour</option>
               </Field>
               {errors.timer && touched.timer ? (
-                <div className="text-red-600 text-sm fade-in">
+                <div className="text-red-600 text-xs fade-in">
                   {errors.timer}
                 </div>
               ) : null}
