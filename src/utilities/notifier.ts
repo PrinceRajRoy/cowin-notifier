@@ -24,16 +24,16 @@ export default function setNotifier(
       const storeState = store.getState();
       const availableCenters = selectAvailableCenters(storeState);
 
-      if (availableCenters.length) {
-        var msg = availableCenters.map((center) => {
-          return `${center.name}, ${
-            center.address
-          } - Total Slots (${center.sessions.reduce(
-            (sl, csl) => sl + csl.available_capacity,
-            0
-          )})`;
-        }, "Slots Available");
-        if (timer) {
+      if (timer && (mobile || desktop || gmail)) {
+        if (availableCenters.length) {
+          var msg = availableCenters.map((center) => {
+            return `${center.name}, ${
+              center.address
+            } - Total Slots (${center.sessions.reduce(
+              (sl, csl) => sl + csl.available_capacity,
+              0
+            )})`;
+          }, "Slots Available");
           if (key) {
             axios.post(
               `https://cowin-notifier.netlify.app/.netlify/functions/notify?hook=${hook}&key=${key}&msg=${msg}`,
