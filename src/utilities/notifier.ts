@@ -36,13 +36,12 @@ export default function setNotifier(
         if (timer) {
           if (key) {
             axios.post(
-              `http://localhost:8888/.netlify/functions/notify?hook=${hook}&key=${key}&msg=${msg}`,
+              `https://cowin-notifier.netlify.app/.netlify/functions/notify?hook=${hook}&key=${key}&msg=${msg}`,
               {
                 Value1: msg,
               }
             );
           }
-          dispatch(toggleModal(msg));
           if (desktop) {
             dispatch(toggleModal(msg));
             audio.play();
